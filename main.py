@@ -86,16 +86,16 @@ def get_loot(connection):
 
 
 def open_chests(connection):
-    logging.info("Checking chests")
+    logging.info("Opening chests")
     try:
         res_json = get_loot(connection)
     except LootRetrieveException:
-        return False
+        return "error"
 
     loot_result = list(
         filter(lambda m: re.fullmatch("CHEST_.*", m["lootId"]), res_json))
     if loot_result == []:
-        return True
+        return "done"
 
     for loot in loot_result:
         logging.info(
@@ -103,21 +103,22 @@ def open_chests(connection):
         url = "https://%s/lol-loot/v1/recipes/%s_OPEN/craft?repeat=%d" % (
             connection["url"], loot["lootName"], loot["count"])
         data = [loot["lootName"]]
-        res = requests.post(
+        requests.post(
             url, verify=False, auth=('riot', connection["authorization"]), timeout=30, json=data)
-    return False
+    return "progress"
 
 
 def disenchant(connection):
+    logging.info("Disenchanting champion shards")
     try:
         res_json = get_loot(connection)
     except LootRetrieveException:
-        return False
+        return "error"
 
     loot_result = list(
         filter(lambda m: m["displayCategories"] == "CHAMPION", res_json))
     if loot_result == []:
-        return True
+        return "done"
 
     for loot in loot_result:
         logging.info(
@@ -127,7 +128,51 @@ def disenchant(connection):
         data = [loot["lootName"]]
         requests.post(
             url, verify=False, auth=('riot', connection["authorization"]), timeout=30, json=data)
-    return False
+    return "progress"
+
+
+def process_redeem(connection, array):
+    for loot in array:
+        logging.info(
+            "Redeeming: %s, Count: %d", loot["itemDesc"], loot["count"])
+        url = "https://%s/lol-loot/v1/player-loot/%s/redeem" % (
+            connection["url"], loot["lootName"])
+        requests.post(
+            url, verify=False, auth=('riot', connection["authorization"]), timeout=30)
+
+
+def redeem_free(connection):
+    logging.info("Redeeming free shards")
+    try:
+        res_json = get_loot(connection)
+    except LootRetrieveException:
+        return "error"
+
+    loot_result = list(
+        filter(lambda m: m["upgradeEssenceValue"] == 0 and m["type"] == "CHAMPION", res_json))
+    print(loot_result)
+    if loot_result == []:
+        return "done"
+
+    process_redeem(connection, loot_result)
+    return "progress"
+
+
+def redeem(connection, value):
+    logging.info("Redeeming %d BE shards", value)
+    try:
+        res_json = get_loot(connection)
+    except LootRetrieveException:
+        return "error"
+
+    loot_result = list(
+        filter(lambda m: m["value"] == value and m["type"] == "CHAMPION_RENTAL", res_json))
+
+    if loot_result == []:
+        return "done"
+
+    process_redeem(connection, loot_result)
+    return "progress"
 
 
 def read_accounts():
@@ -165,11 +210,26 @@ if __name__ == "__main__":
             time.sleep(1)
 
         while True:
-            if open_chests(connection):
+            if open_chests(connection) == "done":
                 break
             time.sleep(1)
 
         while True:
-            if disenchant(connection):
+            if redeem_free(connection) == "done":
                 break
             time.sleep(1)
+
+        while True:
+            if redeem(connection, 450) == "done":
+                break
+            time.sleep(1)
+
+        while True:
+            if redeem(connection, 1350) == "done":
+                break
+            time.sleep(1)
+
+        # while True:
+        #     if disenchant(connection) == "done":
+        #         break
+        #     time.sleep(1)
