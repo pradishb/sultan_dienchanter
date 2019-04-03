@@ -1,10 +1,16 @@
+import argparse
 import configparser
+import csv
 import logging
+import re
+import sys
+import os
+import time
 
 import lcu_connector_python as lcu
 import requests
+import subprocess
 
-import re
 
 config = configparser.ConfigParser()
 config.read("config/config.cfg")
@@ -14,6 +20,10 @@ logging.getLogger().setLevel(logging.INFO)
 
 
 class LeagueConnectionException(Exception):
+    pass
+
+
+class LootRetrieveException(Exception):
     pass
 
 
@@ -27,18 +37,21 @@ def connect():
 def check_login_session(connection):
     logging.debug("Checking if user is logged in.")
     url = "https://%s/lol-login/v1/session" % connection["url"]
-    res = requests.get(
-        url, verify=False, auth=('riot', connection["authorization"]), timeout=30)
-    res_json = res.json()
+    try:
+        res = requests.get(
+            url, verify=False, auth=('riot', connection["authorization"]), timeout=30)
+        res_json = res.json()
 
-    if res.status_code == 404:
-        return False
+        if res.status_code == 404:
+            return False
 
-    if res_json["state"] == "SUCCEEDED":
-        return True
-    if res_json["state"] == "ERROR":
+        if res_json["state"] == "SUCCEEDED":
+            return True
+        if res_json["state"] == "ERROR":
+            return False
         return False
-    return False
+    except requests.RequestException:
+        return False
 
 
 def login(connection, username, password):
@@ -60,17 +73,29 @@ def logout(connection):
         url, verify=False, auth=('riot', connection["authorization"]), timeout=30,)
 
 
-def redeem():
+def get_loot(connection):
+    logging.info("Retrieving loot")
     url = "https://%s/lol-loot/v1/player-loot" % connection["url"]
     res = requests.get(
         url, verify=False, auth=('riot', connection["authorization"]), timeout=30,)
     res_json = res.json()
-    # print(res_json)
+    if res_json == []:
+        logging.error("Can't retrieve loot")
+        raise LootRetrieveException
+    return res_json
+
+
+def open_chests(connection):
+    logging.info("Checking chests")
+    try:
+        res_json = get_loot(connection)
+    except LootRetrieveException:
+        return False
 
     loot_result = list(
         filter(lambda m: re.fullmatch("CHEST_.*", m["lootId"]), res_json))
     if loot_result == []:
-        return False
+        return True
 
     for loot in loot_result:
         logging.info(
@@ -80,92 +105,71 @@ def redeem():
         data = [loot["lootName"]]
         res = requests.post(
             url, verify=False, auth=('riot', connection["authorization"]), timeout=30, json=data)
-    return True
-    # if loot_result == []:
-    #     return False
+    return False
 
 
-connection = connect()
-# logout(connection)
-while not check_login_session(connection):
-    login(connection, "Zorlaidricht", "7WRbOphSTbypQTb4")
+def disenchant(connection):
+    try:
+        res_json = get_loot(connection)
+    except LootRetrieveException:
+        return False
 
-while True:
-    if not redeem():
-        break
+    loot_result = list(
+        filter(lambda m: m["displayCategories"] == "CHAMPION", res_json))
+    if loot_result == []:
+        return True
 
-while check_login_session(connection):
-    logout(connection)
-# redeem()
-# def request(self, path, method, payload=None):
-#     if not self.connection:
-#         return {}
-#     try:
-#         url = ("https://" +
-#                self.connection["url"] +
-#                path)
-#         logging.debug(
-#             "request,method=%s,url=%s,payload=%s",
-#             method, url, payload)
-#         res = None
-#         if method == "get":
-#             res = requests.get(
-#                 url,
-#                 verify=False,
-#                 params=payload,
-#                 auth=requests.auth.HTTPBasicAuth(
-#                     'riot', self.connection["authorization"]),
-#                 timeout=30)
-#         if method == "post":
-#             res = requests.post(
-#                 url,
-#                 verify=False,
-#                 json=payload,
-#                 auth=requests.auth.HTTPBasicAuth(
-#                     'riot', self.connection["authorization"]),
-#                 timeout=30)
-#         if method == "delete":
-#             res = requests.delete(
-#                 url,
-#                 verify=False,
-#                 json=payload,
-#                 auth=requests.auth.HTTPBasicAuth(
-#                     'riot', self.connection["authorization"]),
-#                 timeout=30)
-#         if method == "patch":
-#             res = requests.patch(
-#                 url,
-#                 verify=False,
-#                 json=payload,
-#                 auth=requests.auth.HTTPBasicAuth(
-#                     'riot', self.connection["authorization"]),
-#                 timeout=30)
-#         if method == "put":
-#             res = requests.put(
-#                 url,
-#                 verify=False,
-#                 json=payload,
-#                 auth=requests.auth.HTTPBasicAuth(
-#                     'riot', self.connection["authorization"]),
-#                 timeout=30)
+    for loot in loot_result:
+        logging.info(
+            "Dienchanting: %s, Count: %d", loot["itemDesc"], loot["count"])
+        url = "https://%s/lol-loot/v1/recipes/%s_disenchant/craft?repeat=%d" % (
+            connection["url"], loot["type"], loot["count"])
+        data = [loot["lootName"]]
+        requests.post(
+            url, verify=False, auth=('riot', connection["authorization"]), timeout=30, json=data)
+    return False
 
-#         self.log_exception(url, res)
-#         return res
-#     except requests.exceptions.Timeout:
-#         logging.error("Request timeout.")
-#         sys.exit()
-#     except json.decoder.JSONDecodeError:
-#         self.log_exception(url, res)
-#         return res
-#     except requests.exceptions.ConnectionError:
-#         self.log_exception(url, res)
-#         return res
-#     except TypeError:
-#         logging.error('Exception in APIClient class')
-#         return {}
 
-# def log_exception(self, url, res):
-#     try:
-#         logging.debug("response,url=%s,status=%s", url, res.status_code)
-#     except AttributeError:
-#         logging.debug("response,url=%s,status=%s", url, "None")
+def read_accounts():
+    accounts = []
+    with open("accounts.txt") as file:
+        reader = csv.reader(file, delimiter=":")
+        for row in reader:
+            accounts.append(row)
+    return accounts
+
+
+def open_league_client():
+    path = os.path.join(config["CLIENT"]["location"], "LeagueClient.exe")
+    process = subprocess.Popen(
+        [path, "--headless"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return process
+
+
+if __name__ == "__main__":
+    try:
+        accounts = read_accounts()
+    except FileNotFoundError:
+        logging.error("Accounts file not found")
+        sys.exit()
+
+    for account in accounts:
+        os.system('taskkill /f /im LeagueClient.exe')
+        logging.info(
+            "Current Account: %s, Password: %s", account[0], account[1])
+        process = open_league_client()
+        time.sleep(5)
+        connection = connect()
+        while not check_login_session(connection):
+            login(connection, account[0], account[1])
+            time.sleep(1)
+
+        while True:
+            if open_chests(connection):
+                break
+            time.sleep(1)
+
+        while True:
+            if disenchant(connection):
+                break
+            time.sleep(1)
