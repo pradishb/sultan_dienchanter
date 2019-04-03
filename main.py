@@ -1,26 +1,102 @@
 import configparser
-
 import logging
+
 import lcu_connector_python as lcu
+import requests
+
+import re
 
 config = configparser.ConfigParser()
 config.read("config/config.cfg")
-print(config["CLIENT"]["locaiton"])
 
-# connection = None
+requests.packages.urllib3.disable_warnings()
+logging.getLogger().setLevel(logging.INFO)
 
 
-# def connect(self):
-#     try:
-#         self.connection = lcu.connect(config.Config.value["location"])
-#         logging.debug(self.connection)
-#         if 'authorization' in self.connection:
-#             return True
-#     except KeyError:
-#         logging.error(
-#             "Error retriving client key. Ensure the client is open.")
-#     return False
+class LeagueConnectionException(Exception):
+    pass
 
+
+def connect():
+    connection = lcu.connect(config["CLIENT"]["location"])
+    if connection == "Ensure the client is running and that you supplied the correct path":
+        raise LeagueConnectionException
+    return connection
+
+
+def check_login_session(connection):
+    logging.debug("Checking if user is logged in.")
+    url = "https://%s/lol-login/v1/session" % connection["url"]
+    res = requests.get(
+        url, verify=False, auth=('riot', connection["authorization"]), timeout=30)
+    res_json = res.json()
+
+    if res.status_code == 404:
+        return False
+
+    if res_json["state"] == "SUCCEEDED":
+        return True
+    if res_json["state"] == "ERROR":
+        return False
+    return False
+
+
+def login(connection, username, password):
+    logging.info("Logging in. Username: %s Password: %s", username, password)
+    data = {
+        "password": password,
+        "username": username,
+    }
+    url = "https://%s/lol-login/v1/session" % connection["url"]
+    requests.post(
+        url, verify=False, auth=('riot', connection["authorization"]), timeout=30,
+        json=data)
+
+
+def logout(connection):
+    logging.info("Logging out")
+    url = "https://%s/lol-login/v1/session" % connection["url"]
+    requests.delete(
+        url, verify=False, auth=('riot', connection["authorization"]), timeout=30,)
+
+
+def redeem():
+    url = "https://%s/lol-loot/v1/player-loot" % connection["url"]
+    res = requests.get(
+        url, verify=False, auth=('riot', connection["authorization"]), timeout=30,)
+    res_json = res.json()
+    # print(res_json)
+
+    loot_result = list(
+        filter(lambda m: re.fullmatch("CHEST_.*", m["lootId"]), res_json))
+    if loot_result == []:
+        return False
+
+    for loot in loot_result:
+        logging.info(
+            "Opening chest: %s, Count: %d", loot["lootName"], loot["count"])
+        url = "https://%s/lol-loot/v1/recipes/%s_OPEN/craft?repeat=%d" % (
+            connection["url"], loot["lootName"], loot["count"])
+        data = [loot["lootName"]]
+        res = requests.post(
+            url, verify=False, auth=('riot', connection["authorization"]), timeout=30, json=data)
+    return True
+    # if loot_result == []:
+    #     return False
+
+
+connection = connect()
+# logout(connection)
+while not check_login_session(connection):
+    login(connection, "Zorlaidricht", "7WRbOphSTbypQTb4")
+
+while True:
+    if not redeem():
+        break
+
+while check_login_session(connection):
+    logout(connection)
+# redeem()
 # def request(self, path, method, payload=None):
 #     if not self.connection:
 #         return {}
