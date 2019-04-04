@@ -33,15 +33,6 @@ def connect():
     return connection
 
 
-def read_accounts():
-    accounts = []
-    with open("accounts.txt") as file:
-        reader = csv.reader(file, delimiter=":")
-        for row in reader:
-            accounts.append(row)
-    return accounts
-
-
 def open_league_client():
     path = os.path.join(config["CLIENT"]["location"], "LeagueClient.exe")
     process = subprocess.Popen(

@@ -6,11 +6,14 @@ import threading
 import time
 import tkinter as tk
 
+import file_handler
+
 logging.getLogger().setLevel(logging.INFO)
 
 
 class LogWriter(object):
     def __init__(self, app):
+        sys.stderr = self
         self.app = app
 
     def write(self, data):
@@ -19,14 +22,9 @@ class LogWriter(object):
 
 class Application:
     def __init__(self, master):
-        logger = LogWriter(self)
-        sys.stderr = logger
+        LogWriter(self)
 
-        callbacks = {
-            'start': self.start,
-            'import_csv': self.start,
-            'export_csv': self.start,
-        }
+        self.accounts = []
 
         import pygubu
         self.master = master
@@ -34,11 +32,43 @@ class Application:
         self.builder = builder = pygubu.Builder()
         self.builder.add_from_file('main_frame.ui')
         self.mainwindow = builder.get_object('main_frame', master)
-        self.builder.connect_callbacks(callbacks)
+        self.builder.connect_callbacks(self)
+        self.init_checkboxes()
+        # self.master.withdraw()
+
+    def init_checkboxes(self):
+        self.set_checkbox("open_chests", True)
+        self.set_checkbox("redeem_free", True)
+        self.set_checkbox("redeem_450", True)
+        self.set_checkbox("redeem_1350", True)
+        self.set_checkbox("disenchant", True)
+        self.set_checkbox("buy_450", True)
+        self.set_checkbox("buy_1350", True)
+        self.set_checkbox("read_be", True)
+        self.set_checkbox("read_owned", True)
+
+    def start(self):
+        logging.info("asdfds")
+        print("hello")
+
+    def import_csv(self):
+        self.accounts = file_handler.import_csv()
+        self.set_treeview("accounts", self.accounts)
+
+    def export_csv(self):
+        print(file_handler.import_csv())
 
     def set_entry(self, name, value):
         self.builder.get_object(name).delete(0, tk.END)
         self.builder.get_object(name).insert(0, str(value))
+
+    def set_treeview(self, name, values):
+        for value in values:
+            self.set_row(name, value)
+
+    def set_row(self, name, value):
+        self.builder.get_object(name).insert(
+            '', 'end', values=value)
 
     def set_checkbox(self, name, value):
         if value:
@@ -49,10 +79,6 @@ class Application:
     def write_console(self, text):
         self.builder.get_object("console").insert(tk.END, text)
         self.builder.get_object("console").see("end")
-
-    def start(self):
-        logging.info("asdfds")
-        print("hello")
 
 
 if __name__ == '__main__':

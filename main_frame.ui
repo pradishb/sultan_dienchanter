@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
-  <object class="ttk.Frame" id="main_frame">
+  <object class="tk.Frame" id="main_frame">
     <property name="height">200</property>
     <property name="width">200</property>
     <layout>
@@ -9,24 +9,20 @@
       <property name="row">0</property>
     </layout>
     <child>
-      <object class="ttk.Labelframe" id="disenchanter">
+      <object class="tk.LabelFrame" id="LabelFrame_2">
         <property name="height">200</property>
-        <property name="text" translatable="yes">Disenchanter</property>
+        <property name="text" translatable="yes">LabelFrame_2</property>
         <property name="width">200</property>
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
           <property name="sticky">nw</property>
-          <columns>
-            <column id="0">
-              <property name="minsize">0</property>
-            </column>
-          </columns>
         </layout>
         <child>
-          <object class="ttk.Checkbutton" id="open_chests">
+          <object class="tk.Checkbutton" id="open_chests">
             <property name="text" translatable="yes">Open Chests</property>
+            <property name="textvariable">string:df</property>
             <layout>
               <property name="column">0</property>
               <property name="columnspan">3</property>
@@ -37,7 +33,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Checkbutton" id="redeem_free">
+          <object class="tk.Checkbutton" id="redeem_free">
             <property name="text" translatable="yes">Redeem free shards</property>
             <layout>
               <property name="column">0</property>
@@ -49,7 +45,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Checkbutton" id="redeem_450">
+          <object class="tk.Checkbutton" id="redeem_450">
             <property name="text" translatable="yes">Redeem 450BE Shards</property>
             <layout>
               <property name="column">0</property>
@@ -61,7 +57,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Checkbutton" id="redeem_1350">
+          <object class="tk.Checkbutton" id="redeem_1350">
             <property name="text" translatable="yes">Redeem 1350BE Shards</property>
             <layout>
               <property name="column">0</property>
@@ -73,7 +69,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Checkbutton" id="disenchant">
+          <object class="tk.Checkbutton" id="disenchant">
             <property name="text" translatable="yes">Disenchant Champion Shards</property>
             <layout>
               <property name="column">0</property>
@@ -85,7 +81,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Checkbutton" id="buy_450">
+          <object class="tk.Checkbutton" id="buy_450">
             <property name="text" translatable="yes">Buy 450BE Champions</property>
             <layout>
               <property name="column">0</property>
@@ -97,7 +93,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Checkbutton" id="buy_1350">
+          <object class="tk.Checkbutton" id="buy_1350">
             <property name="text" translatable="yes">Buy 1350BE Champions</property>
             <layout>
               <property name="column">0</property>
@@ -109,7 +105,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Checkbutton" id="read_be">
+          <object class="tk.Checkbutton" id="read_be">
             <property name="text" translatable="yes">Read Blue Essence</property>
             <layout>
               <property name="column">0</property>
@@ -121,7 +117,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Checkbutton" id="read_owned">
+          <object class="tk.Checkbutton" id="read_owned">
             <property name="text" translatable="yes">Read Number of Owned Champions</property>
             <layout>
               <property name="column">0</property>
@@ -133,7 +129,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Button" id="start">
+          <object class="tk.Button" id="start">
             <property name="command">start</property>
             <property name="text" translatable="yes">Start</property>
             <layout>
@@ -145,7 +141,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Button" id="Button_1">
+          <object class="tk.Button" id="Button_1">
             <property name="command">import_csv</property>
             <property name="text" translatable="yes">Import Csv</property>
             <layout>
@@ -156,7 +152,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Button" id="Button_2">
+          <object class="tk.Button" id="Button_2">
             <property name="command">export_csv</property>
             <property name="text" translatable="yes">Export Csv</property>
             <layout>
@@ -182,60 +178,9 @@
       </object>
     </child>
     <child>
-      <object class="ttk.Labelframe" id="console_frame">
+      <object class="tk.LabelFrame" id="LabelFrame_5">
         <property name="height">200</property>
-        <property name="text" translatable="yes">Console</property>
-        <property name="width">200</property>
-        <layout>
-          <property name="column">0</property>
-          <property name="columnspan">2</property>
-          <property name="propagate">True</property>
-          <property name="row">1</property>
-          <property name="sticky">nw</property>
-        </layout>
-        <child>
-          <object class="tk.Text" id="console">
-            <property name="height">10</property>
-            <property name="insertofftime">0</property>
-            <property name="width">50</property>
-            <layout>
-              <property name="column">0</property>
-              <property name="propagate">True</property>
-              <property name="row">0</property>
-            </layout>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="ttk.Labelframe" id="account_list">
-        <property name="height">200</property>
-        <property name="text" translatable="yes">Account List</property>
-        <property name="width">200</property>
-        <layout>
-          <property name="column">0</property>
-          <property name="columnspan">2</property>
-          <property name="propagate">True</property>
-          <property name="row">2</property>
-          <property name="sticky">nw</property>
-        </layout>
-        <child>
-          <object class="ttk.Treeview" id="Treeview_1">
-            <property name="selectmode">extended</property>
-            <layout>
-              <property name="column">0</property>
-              <property name="propagate">True</property>
-              <property name="row">0</property>
-              <property name="sticky">w</property>
-            </layout>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="ttk.Labelframe" id="current_account">
-        <property name="height">200</property>
-        <property name="text" translatable="yes">Current Account</property>
+        <property name="text" translatable="yes">LabelFrame_5</property>
         <property name="width">200</property>
         <layout>
           <property name="column">1</property>
@@ -244,7 +189,7 @@
           <property name="sticky">nw</property>
         </layout>
         <child>
-          <object class="ttk.Label" id="username_label">
+          <object class="tk.Label" id="username_label">
             <property name="text" translatable="yes">Username</property>
             <layout>
               <property name="column">0</property>
@@ -255,7 +200,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Label" id="password_label">
+          <object class="tk.Label" id="password_label">
             <property name="text" translatable="yes">Password</property>
             <layout>
               <property name="column">0</property>
@@ -266,7 +211,7 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Label" id="be_label">
+          <object class="tk.Label" id="be_label">
             <property name="text" translatable="yes">Blue Essence</property>
             <layout>
               <property name="column">0</property>
@@ -306,13 +251,103 @@
             </layout>
           </object>
         </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.LabelFrame" id="LabelFrame_7">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">LabelFrame_7</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="columnspan">2</property>
+          <property name="propagate">True</property>
+          <property name="row">3</property>
+          <property name="sticky">nw</property>
+        </layout>
         <child>
-          <object class="ttk.Checkbutton" id="logged_in">
-            <property name="text" translatable="yes">Logged in</property>
+          <object class="ttk.Treeview" id="accounts">
+            <property name="selectmode">extended</property>
+            <property name="show">headings</property>
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
-              <property name="row">3</property>
+              <property name="row">0</property>
+              <property name="sticky">w</property>
+            </layout>
+            <child>
+              <object class="ttk.Treeview.Column" id="Column_1">
+                <property name="column_anchor">w</property>
+                <property name="heading_anchor">w</property>
+                <property name="minwidth">20</property>
+                <property name="stretch">true</property>
+                <property name="text" translatable="yes">Username</property>
+                <property name="tree_column">false</property>
+                <property name="visible">true</property>
+                <property name="width">100</property>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Treeview.Column" id="Column_2">
+                <property name="column_anchor">w</property>
+                <property name="heading_anchor">w</property>
+                <property name="minwidth">20</property>
+                <property name="stretch">true</property>
+                <property name="text" translatable="yes">Password</property>
+                <property name="tree_column">false</property>
+                <property name="visible">true</property>
+                <property name="width">120</property>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Treeview.Column" id="Column_3">
+                <property name="column_anchor">w</property>
+                <property name="heading_anchor">w</property>
+                <property name="minwidth">20</property>
+                <property name="stretch">true</property>
+                <property name="text" translatable="yes">Blue Essence</property>
+                <property name="tree_column">false</property>
+                <property name="visible">true</property>
+                <property name="width">80</property>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Treeview.Column" id="Column_4">
+                <property name="column_anchor">w</property>
+                <property name="heading_anchor">w</property>
+                <property name="minwidth">20</property>
+                <property name="stretch">true</property>
+                <property name="text" translatable="yes">Number of Champs</property>
+                <property name="tree_column">false</property>
+                <property name="visible">true</property>
+                <property name="width">120</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.LabelFrame" id="LabelFrame_8">
+        <property name="height">200</property>
+        <property name="text" translatable="yes">LabelFrame_7</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="columnspan">2</property>
+          <property name="propagate">True</property>
+          <property name="row">2</property>
+          <property name="sticky">nw</property>
+        </layout>
+        <child>
+          <object class="tk.Text" id="console">
+            <property name="height">10</property>
+            <property name="insertofftime">0</property>
+            <property name="width">50</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
             </layout>
           </object>
         </child>
