@@ -53,7 +53,9 @@ class Application:
             logging.error("No accounts imported")
             return
         self.clear_treeview("accounts")
-        threading.Thread(target=self.start_macro).start()
+        thread = threading.Thread(target=self.start_macro)
+        thread.daemon = True
+        thread.start()
 
     def start_macro(self):
         options = [
