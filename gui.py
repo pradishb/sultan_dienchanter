@@ -35,7 +35,6 @@ class Application:
         self.mainwindow = builder.get_object('main_frame', master)
         self.builder.connect_callbacks(self)
         self.init_checkboxes()
-        # self.master.withdraw()
 
     def init_checkboxes(self):
         self.init_checkbox("open_chests", True)
@@ -71,9 +70,11 @@ class Application:
         ]
         for idx, account in enumerate(self.accounts):
             res = client.do_macro(account, options)
+            progress = (idx + 1) * 100 // len(self.accounts)
             account = account + res
             self.accounts[idx] = account
             self.set_row("accounts", account)
+            self.builder.get_object("progress")["value"] = progress
 
     def import_csv(self):
         self.accounts = file_handler.import_csv()

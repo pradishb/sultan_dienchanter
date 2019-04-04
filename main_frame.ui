@@ -9,9 +9,9 @@
       <property name="row">0</property>
     </layout>
     <child>
-      <object class="tk.LabelFrame" id="LabelFrame_2">
+      <object class="tk.LabelFrame" id="disenchanter">
         <property name="height">200</property>
-        <property name="text" translatable="yes">LabelFrame_2</property>
+        <property name="text" translatable="yes">Disenchanter</property>
         <property name="width">200</property>
         <layout>
           <property name="column">0</property>
@@ -131,18 +131,20 @@
           <object class="tk.Button" id="start">
             <property name="command">start</property>
             <property name="text" translatable="yes">Start</property>
+            <property name="width">10</property>
             <layout>
               <property name="column">0</property>
-              <property name="propagate">True</property>
+              <property name="propagate">False</property>
               <property name="row">9</property>
               <property name="sticky">w</property>
             </layout>
           </object>
         </child>
         <child>
-          <object class="tk.Button" id="Button_1">
+          <object class="tk.Button" id="import_csv">
             <property name="command">import_csv</property>
             <property name="text" translatable="yes">Import Csv</property>
+            <property name="width">10</property>
             <layout>
               <property name="column">1</property>
               <property name="propagate">True</property>
@@ -151,9 +153,10 @@
           </object>
         </child>
         <child>
-          <object class="tk.Button" id="Button_2">
+          <object class="tk.Button" id="export_csv">
             <property name="command">export_csv</property>
             <property name="text" translatable="yes">Export Csv</property>
+            <property name="width">10</property>
             <layout>
               <property name="column">2</property>
               <property name="propagate">True</property>
@@ -163,12 +166,13 @@
           </object>
         </child>
         <child>
-          <object class="ttk.Progressbar" id="Progressbar_1">
+          <object class="ttk.Progressbar" id="progress">
+            <property name="length">250</property>
             <property name="orient">horizontal</property>
             <layout>
               <property name="column">0</property>
               <property name="columnspan">3</property>
-              <property name="propagate">True</property>
+              <property name="propagate">False</property>
               <property name="row">10</property>
               <property name="sticky">w</property>
             </layout>
@@ -177,91 +181,14 @@
       </object>
     </child>
     <child>
-      <object class="tk.LabelFrame" id="LabelFrame_5">
-        <property name="height">200</property>
-        <property name="text" translatable="yes">LabelFrame_5</property>
-        <property name="width">200</property>
+      <object class="tk.LabelFrame" id="accounts_frame">
+        <property name="height">256</property>
+        <property name="text" translatable="yes">Accounts</property>
+        <property name="width">438</property>
         <layout>
           <property name="column">1</property>
-          <property name="propagate">True</property>
+          <property name="propagate">False</property>
           <property name="row">0</property>
-          <property name="sticky">nw</property>
-        </layout>
-        <child>
-          <object class="tk.Label" id="username_label">
-            <property name="text" translatable="yes">Username</property>
-            <layout>
-              <property name="column">0</property>
-              <property name="propagate">True</property>
-              <property name="row">0</property>
-              <property name="sticky">w</property>
-            </layout>
-          </object>
-        </child>
-        <child>
-          <object class="tk.Label" id="password_label">
-            <property name="text" translatable="yes">Password</property>
-            <layout>
-              <property name="column">0</property>
-              <property name="propagate">True</property>
-              <property name="row">1</property>
-              <property name="sticky">w</property>
-            </layout>
-          </object>
-        </child>
-        <child>
-          <object class="tk.Label" id="be_label">
-            <property name="text" translatable="yes">Blue Essence</property>
-            <layout>
-              <property name="column">0</property>
-              <property name="propagate">True</property>
-              <property name="row">2</property>
-              <property name="sticky">w</property>
-            </layout>
-          </object>
-        </child>
-        <child>
-          <object class="ttk.Entry" id="username">
-            <property name="text" translatable="yes">Entry_1</property>
-            <layout>
-              <property name="column">1</property>
-              <property name="propagate">True</property>
-              <property name="row">0</property>
-            </layout>
-          </object>
-        </child>
-        <child>
-          <object class="ttk.Entry" id="password">
-            <property name="text" translatable="yes">Entry_2</property>
-            <layout>
-              <property name="column">1</property>
-              <property name="propagate">True</property>
-              <property name="row">1</property>
-            </layout>
-          </object>
-        </child>
-        <child>
-          <object class="ttk.Entry" id="be">
-            <property name="text" translatable="yes">Entry_3</property>
-            <layout>
-              <property name="column">1</property>
-              <property name="propagate">True</property>
-              <property name="row">2</property>
-            </layout>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="tk.LabelFrame" id="LabelFrame_7">
-        <property name="height">200</property>
-        <property name="text" translatable="yes">LabelFrame_7</property>
-        <property name="width">200</property>
-        <layout>
-          <property name="column">0</property>
-          <property name="columnspan">2</property>
-          <property name="propagate">True</property>
-          <property name="row">3</property>
           <property name="sticky">nw</property>
         </layout>
         <child>
@@ -327,22 +254,22 @@
       </object>
     </child>
     <child>
-      <object class="tk.LabelFrame" id="LabelFrame_8">
+      <object class="tk.LabelFrame" id="console_frame">
         <property name="height">200</property>
-        <property name="text" translatable="yes">LabelFrame_7</property>
-        <property name="width">200</property>
+        <property name="text" translatable="yes">Console</property>
+        <property name="width">700</property>
         <layout>
           <property name="column">0</property>
           <property name="columnspan">2</property>
-          <property name="propagate">True</property>
+          <property name="propagate">False</property>
           <property name="row">2</property>
           <property name="sticky">nw</property>
         </layout>
         <child>
           <object class="tk.Text" id="console">
-            <property name="height">10</property>
+            <property name="height">11</property>
             <property name="insertofftime">0</property>
-            <property name="width">50</property>
+            <property name="width">85</property>
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
