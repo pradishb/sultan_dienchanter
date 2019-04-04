@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "75e4ccdbed9dc4d86a0f5281fbaaa2e86dc0be5638345a4a4901aa8f3dbc3184"
+            "sha256": "6e6bdc9e777300a6a301b83f21861307b541b2dcdacc1556dbedf1a1c9cefd63"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,13 @@
         ]
     },
     "default": {
+        "appdirs": {
+            "hashes": [
+                "sha256:9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92",
+                "sha256:d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"
+            ],
+            "version": "==1.4.3"
+        },
         "certifi": {
             "hashes": [
                 "sha256:59b7658e26ca9c7339e00f8f4636cdfe59d34fa37b9b04f6f9e9926b3cece1a5",
@@ -44,6 +51,13 @@
             ],
             "index": "pypi",
             "version": "==1.0"
+        },
+        "pygubu": {
+            "hashes": [
+                "sha256:3c4adb0f6253c7e2298136b187ecee49932e9db300460e981c8ffa474c96874f"
+            ],
+            "index": "pypi",
+            "version": "==0.9.8.2"
         },
         "requests": {
             "hashes": [

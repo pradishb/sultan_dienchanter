@@ -94,3 +94,4 @@ if __name__ == "__main__":
 
         store.buy_champ_by_be(connection, 450)
         store.buy_champ_by_be(connection, 1350)
+    os.system('taskkill /f /im LeagueClient.exe')

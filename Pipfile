@@ -10,6 +10,7 @@ autopep8 = "*"
 [packages]
 requests = "*"
 lcu-connector-python = "*"
+pygubu = "*"
 
 [requires]
 python_version = "3.6"
