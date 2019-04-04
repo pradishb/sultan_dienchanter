@@ -1,4 +1,5 @@
 import logging
+import time
 
 import requests
 
@@ -40,3 +41,9 @@ def logout(connection):
     url = "https://%s/lol-login/v1/session" % connection["url"]
     requests.delete(
         url, verify=False, auth=('riot', connection["authorization"]), timeout=30,)
+
+
+def login_loop(connection, account):
+    while not check_login_session(connection):
+        login(connection, account[0], account[1])
+        time.sleep(1)

@@ -1,5 +1,6 @@
 import logging
 import re
+import time
 
 import requests
 
@@ -115,3 +116,31 @@ def redeem(connection, value):
 
     process_redeem(connection, loot_result)
     return "progress"
+
+
+def open_chests_loop(connection):
+    while True:
+        if open_chests(connection) == "done":
+            break
+        time.sleep(1)
+
+
+def redeem_free_loop(connection):
+    while True:
+        if redeem_free(connection) == "done":
+            break
+        time.sleep(1)
+
+
+def redeem_loop(connection, value):
+    while True:
+        if redeem(connection, value) == "done":
+            break
+        time.sleep(1)
+
+
+def disenchant_loop(connection):
+    while True:
+        if disenchant(connection) == "done":
+            break
+        time.sleep(1)

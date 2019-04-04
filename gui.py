@@ -6,6 +6,7 @@ import threading
 import time
 import tkinter as tk
 
+import client
 import file_handler
 
 logging.getLogger().setLevel(logging.INFO)
@@ -48,8 +49,17 @@ class Application:
         self.set_checkbox("read_owned", True)
 
     def start(self):
-        logging.info("asdfds")
-        print("hello")
+        if self.accounts == []:
+            logging.error("No accounts imported")
+            return
+        self.clear_treeview("accounts")
+        threading.Thread(target=self.start_macro).start()
+
+    def start_macro(self):
+        account = self.accounts[0]
+        res = client.do_macro(account, [
+            False, False, False, False, False, False, False, True, False])
+        self.set_row("accounts", account + res)
 
     def import_csv(self):
         self.accounts = file_handler.import_csv()
@@ -65,6 +75,10 @@ class Application:
     def set_treeview(self, name, values):
         for value in values:
             self.set_row(name, value)
+
+    def clear_treeview(self, name):
+        tree = self.builder.get_object(name)
+        tree.delete(*tree.get_children())
 
     def set_row(self, name, value):
         self.builder.get_object(name).insert(
