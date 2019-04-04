@@ -68,6 +68,8 @@ class Application:
             self.builder.get_object('read_be').instate(['selected']),
             self.builder.get_object('read_owned').instate(['selected']),
         ]
+        self.builder.get_object("start")['state'] = 'disabled'
+
         for idx, account in enumerate(self.accounts):
             res = client.do_macro(account, options)
             progress = (idx + 1) * 100 // len(self.accounts)
@@ -75,6 +77,7 @@ class Application:
             self.accounts[idx] = account
             self.set_row("accounts", account)
             self.builder.get_object("progress")["value"] = progress
+        self.builder.get_object("start")['state'] = 'normal'
 
     def import_csv(self):
         self.accounts = file_handler.import_csv()
