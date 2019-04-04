@@ -4,26 +4,32 @@ import time
 import requests
 
 
+class ClientResponseError(Exception):
+    pass
+
+
 def check_owned(connection):
-    logging.info("Checking number of champions owned")
     url = "https://%s/lol-champions/v1/owned-champions-minimal" % connection["url"]
     res = requests.get(
         url, verify=False, auth=('riot', connection["authorization"]), timeout=30)
     if res.status_code == 404:
-        return "not_found"
+        raise ClientResponseError
     res_json = res.json()
-    print(res_json)
+    if res_json == []:
+        raise ClientResponseError
     filtered = list(
         filter(lambda m: m["ownership"]["owned"], res_json))
 
-    logging.info("%d champs owned bitch", len(filtered))
-    return "done"
+    return len(filtered)
 
 
 def check_owned_loop(connection):
+    logging.info("Checking number of champions owned")
     while True:
-        if check_owned(connection) == "done":
-            break
+        try:
+            return check_owned(connection)
+        except ClientResponseError:
+            pass
         time.sleep(1)
 
 

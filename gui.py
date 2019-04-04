@@ -56,10 +56,13 @@ class Application:
         threading.Thread(target=self.start_macro).start()
 
     def start_macro(self):
-        account = self.accounts[0]
-        res = client.do_macro(account, [
-            False, False, False, False, False, False, False, True, False])
-        self.set_row("accounts", account + res)
+        for idx, account in enumerate(self.accounts):
+            res = client.do_macro(account, [
+                False, False, False, False, False, False, False, True, True])
+            account = account + res
+            self.accounts[idx] = account
+            self.set_row("accounts", account)
+            print(self.accounts)
 
     def import_csv(self):
         self.accounts = file_handler.import_csv()
