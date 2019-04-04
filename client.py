@@ -21,6 +21,18 @@ config.read("config/config.cfg")
 
 requests.packages.urllib3.disable_warnings()
 
+HANDLERS = [
+    (loot.open_chests_loop, []),
+    (loot.redeem_free_loop, []),
+    (loot.redeem_loop, [450]),
+    (loot.redeem_loop, [1350]),
+    (loot.disenchant_loop, []),
+    (store.buy_champ_by_be, [450]),
+    (store.buy_champ_by_be, [1350]),
+    (account_info.get_be, []),
+    (account_info.check_owned_loop, []),
+]
+
 
 class LeagueConnectionException(Exception):
     pass
@@ -48,18 +60,6 @@ def do_macro(acc, options):
     connection = connect()
     account.login_loop(connection, acc)
 
-    handlers = [
-        (loot.open_chests_loop, []),
-        (loot.redeem_free_loop, []),
-        (loot.redeem_loop, [450]),
-        (loot.redeem_loop, [1350]),
-        (loot.disenchant_loop, []),
-        (store.buy_champ_by_be, [450]),
-        (store.buy_champ_by_be, [1350]),
-        (account_info.get_be, []),
-        (account_info.check_owned_loop, []),
-    ]
-
     result = {
         7: None,
         8: None,
@@ -68,7 +68,7 @@ def do_macro(acc, options):
     for key in range(len(options)):
         if not options[key]:
             continue
-        result[key] = handlers[key][0](connection, *handlers[key][1])
+        result[key] = HANDLERS[key][0](connection, *HANDLERS[key][1])
 
     os.system('taskkill /f /im LeagueClient.exe')
     logging.info("Done")

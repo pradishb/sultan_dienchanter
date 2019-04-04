@@ -38,15 +38,15 @@ class Application:
         # self.master.withdraw()
 
     def init_checkboxes(self):
-        self.set_checkbox("open_chests", True)
-        self.set_checkbox("redeem_free", True)
-        self.set_checkbox("redeem_450", True)
-        self.set_checkbox("redeem_1350", True)
-        self.set_checkbox("disenchant", True)
-        self.set_checkbox("buy_450", True)
-        self.set_checkbox("buy_1350", True)
-        self.set_checkbox("read_be", True)
-        self.set_checkbox("read_owned", True)
+        self.init_checkbox("open_chests", True)
+        self.init_checkbox("redeem_free", True)
+        self.init_checkbox("redeem_450", True)
+        self.init_checkbox("redeem_1350", True)
+        self.init_checkbox("disenchant", True)
+        self.init_checkbox("buy_450", True)
+        self.init_checkbox("buy_1350", True)
+        self.init_checkbox("read_be", True)
+        self.init_checkbox("read_owned", True)
 
     def start(self):
         if self.accounts == []:
@@ -56,9 +56,19 @@ class Application:
         threading.Thread(target=self.start_macro).start()
 
     def start_macro(self):
+        options = [
+            self.builder.get_object('open_chests').instate(['selected']),
+            self.builder.get_object('redeem_free').instate(['selected']),
+            self.builder.get_object('redeem_450').instate(['selected']),
+            self.builder.get_object('redeem_1350').instate(['selected']),
+            self.builder.get_object('disenchant').instate(['selected']),
+            self.builder.get_object('buy_450').instate(['selected']),
+            self.builder.get_object('buy_1350').instate(['selected']),
+            self.builder.get_object('read_be').instate(['selected']),
+            self.builder.get_object('read_owned').instate(['selected']),
+        ]
         for idx, account in enumerate(self.accounts):
-            res = client.do_macro(account, [
-                False, False, False, False, False, False, False, True, True])
+            res = client.do_macro(account, options)
             account = account + res
             self.accounts[idx] = account
             self.set_row("accounts", account)
@@ -87,11 +97,12 @@ class Application:
         self.builder.get_object(name).insert(
             '', 'end', values=value)
 
-    def set_checkbox(self, name, value):
+    def init_checkbox(self, name, value):
+        self.builder.get_object(name).state(['!alternate'])
         if value:
-            self.builder.get_object(name).select()
+            self.builder.get_object(name).state(['selected'])
         else:
-            self.builder.get_object(name).deselect()
+            self.builder.get_object(name).state(['!selected'])
 
     def write_console(self, text):
         self.builder.get_object("console").insert(tk.END, text)

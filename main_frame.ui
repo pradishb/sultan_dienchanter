@@ -20,9 +20,8 @@
           <property name="sticky">nw</property>
         </layout>
         <child>
-          <object class="tk.Checkbutton" id="open_chests">
+          <object class="ttk.Checkbutton" id="open_chests">
             <property name="text" translatable="yes">Open Chests</property>
-            <property name="textvariable">string:df</property>
             <layout>
               <property name="column">0</property>
               <property name="columnspan">3</property>
@@ -33,7 +32,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Checkbutton" id="redeem_free">
+          <object class="ttk.Checkbutton" id="redeem_free">
             <property name="text" translatable="yes">Redeem free shards</property>
             <layout>
               <property name="column">0</property>
@@ -45,7 +44,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Checkbutton" id="redeem_450">
+          <object class="ttk.Checkbutton" id="redeem_450">
             <property name="text" translatable="yes">Redeem 450BE Shards</property>
             <layout>
               <property name="column">0</property>
@@ -57,7 +56,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Checkbutton" id="redeem_1350">
+          <object class="ttk.Checkbutton" id="redeem_1350">
             <property name="text" translatable="yes">Redeem 1350BE Shards</property>
             <layout>
               <property name="column">0</property>
@@ -69,7 +68,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Checkbutton" id="disenchant">
+          <object class="ttk.Checkbutton" id="disenchant">
             <property name="text" translatable="yes">Disenchant Champion Shards</property>
             <layout>
               <property name="column">0</property>
@@ -81,7 +80,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Checkbutton" id="buy_450">
+          <object class="ttk.Checkbutton" id="buy_450">
             <property name="text" translatable="yes">Buy 450BE Champions</property>
             <layout>
               <property name="column">0</property>
@@ -93,7 +92,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Checkbutton" id="buy_1350">
+          <object class="ttk.Checkbutton" id="buy_1350">
             <property name="text" translatable="yes">Buy 1350BE Champions</property>
             <layout>
               <property name="column">0</property>
@@ -105,7 +104,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Checkbutton" id="read_be">
+          <object class="ttk.Checkbutton" id="read_be">
             <property name="text" translatable="yes">Read Blue Essence</property>
             <layout>
               <property name="column">0</property>
@@ -117,7 +116,7 @@
           </object>
         </child>
         <child>
-          <object class="tk.Checkbutton" id="read_owned">
+          <object class="ttk.Checkbutton" id="read_owned">
             <property name="text" translatable="yes">Read Number of Owned Champions</property>
             <layout>
               <property name="column">0</property>
