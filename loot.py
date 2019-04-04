@@ -10,7 +10,6 @@ class LootRetrieveException(Exception):
 
 
 def get_loot(connection):
-    logging.info("Retrieving loot")
     url = "https://%s/lol-loot/v1/player-loot" % connection["url"]
     res = requests.get(
         url, verify=False, auth=('riot', connection["authorization"]), timeout=30,)
@@ -22,7 +21,6 @@ def get_loot(connection):
 
 
 def open_chests(connection):
-    logging.info("Opening chests")
     try:
         res_json = get_loot(connection)
     except LootRetrieveException:
@@ -45,7 +43,6 @@ def open_chests(connection):
 
 
 def disenchant(connection):
-    logging.info("Disenchanting champion shards")
     try:
         res_json = get_loot(connection)
     except LootRetrieveException:
@@ -78,7 +75,6 @@ def process_redeem(connection, array):
 
 
 def redeem_free(connection):
-    logging.info("Redeeming free shards")
     try:
         res_json = get_loot(connection)
     except LootRetrieveException:
@@ -98,7 +94,6 @@ def redeem_free(connection):
 
 
 def redeem(connection, value):
-    logging.info("Redeeming %d BE shards", value)
     try:
         res_json = get_loot(connection)
     except LootRetrieveException:
@@ -119,6 +114,7 @@ def redeem(connection, value):
 
 
 def open_chests_loop(connection):
+    logging.info("Opening all champion capsules")
     while True:
         if open_chests(connection) == "done":
             break
@@ -126,6 +122,7 @@ def open_chests_loop(connection):
 
 
 def redeem_free_loop(connection):
+    logging.info("Redeeming free shards")
     while True:
         if redeem_free(connection) == "done":
             break
@@ -133,6 +130,7 @@ def redeem_free_loop(connection):
 
 
 def redeem_loop(connection, value):
+    logging.info("Redeeming %d BE shards", value)
     while True:
         if redeem(connection, value) == "done":
             break
@@ -140,6 +138,7 @@ def redeem_loop(connection, value):
 
 
 def disenchant_loop(connection):
+    logging.info("Disenchanting all champion shards")
     while True:
         if disenchant(connection) == "done":
             break

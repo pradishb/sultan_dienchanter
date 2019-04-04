@@ -62,14 +62,14 @@ class Application:
             account = account + res
             self.accounts[idx] = account
             self.set_row("accounts", account)
-            print(self.accounts)
 
     def import_csv(self):
         self.accounts = file_handler.import_csv()
         self.set_treeview("accounts", self.accounts)
 
     def export_csv(self):
-        print(file_handler.import_csv())
+        if file_handler.export_csv(self.accounts):
+            logging.info("Successfully exported")
 
     def set_entry(self, name, value):
         self.builder.get_object(name).delete(0, tk.END)

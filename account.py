@@ -5,7 +5,6 @@ import requests
 
 
 def check_login_session(connection):
-    logging.debug("Checking if user is logged in.")
     url = "https://%s/lol-login/v1/session" % connection["url"]
     try:
         res = requests.get(
@@ -25,7 +24,6 @@ def check_login_session(connection):
 
 
 def login(connection, username, password):
-    logging.info("Logging in. Username: %s Password: %s", username, password)
     data = {
         "password": password,
         "username": username,
@@ -44,6 +42,8 @@ def logout(connection):
 
 
 def login_loop(connection, account):
+    logging.info(
+        "Logging in. Username: %s Password: %s", account[0], account[1])
     while not check_login_session(connection):
         login(connection, account[0], account[1])
         time.sleep(1)

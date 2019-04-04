@@ -15,6 +15,13 @@ def import_csv():
     return accounts
 
 
-def export_csv():
-    file = filedialog.askopenfile("w")
-    print(file)
+def export_csv(data):
+    file = filedialog.asksaveasfilename()
+    try:
+        with open(file, mode="w", newline="") as csvfile:
+            writer = csv.writer(csvfile, delimiter=":")
+            for row in data:
+                writer.writerow(row)
+    except FileNotFoundError:
+        return False
+    return True
