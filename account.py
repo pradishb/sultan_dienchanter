@@ -24,21 +24,27 @@ def check_login_session(connection):
 
 
 def login(connection, username, password):
-    data = {
-        "password": password,
-        "username": username,
-    }
-    url = "https://%s/lol-login/v1/session" % connection["url"]
-    requests.post(
-        url, verify=False, auth=('riot', connection["authorization"]), timeout=30,
-        json=data)
+    try:
+        data = {
+            "password": password,
+            "username": username,
+        }
+        url = "https://%s/lol-login/v1/session" % connection["url"]
+        requests.post(
+            url, verify=False, auth=('riot', connection["authorization"]), timeout=30,
+            json=data)
+    except requests.RequestException:
+        return
 
 
 def logout(connection):
-    logging.info("Logging out")
-    url = "https://%s/lol-login/v1/session" % connection["url"]
-    requests.delete(
-        url, verify=False, auth=('riot', connection["authorization"]), timeout=30,)
+    try:
+        logging.info("Logging out")
+        url = "https://%s/lol-login/v1/session" % connection["url"]
+        requests.delete(
+            url, verify=False, auth=('riot', connection["authorization"]), timeout=30,)
+    except requests.RequestException:
+        return
 
 
 def login_loop(connection, account):

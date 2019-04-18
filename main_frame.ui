@@ -129,7 +129,7 @@
         </child>
         <child>
           <object class="ttk.Checkbutton" id="change_icon">
-            <property name="text" translatable="yes">Read Number of Owned Champions</property>
+            <property name="text" translatable="yes">Change Summoner Icon</property>
             <layout>
               <property name="column">0</property>
               <property name="columnspan">3</property>
