@@ -46,6 +46,7 @@ class Application:
         self.init_checkbox("buy_1350", True)
         self.init_checkbox("read_be", True)
         self.init_checkbox("read_owned", True)
+        self.init_checkbox("change_icon", True)
 
     def start(self):
         if self.accounts == []:
@@ -67,6 +68,7 @@ class Application:
             self.builder.get_object('buy_1350').instate(['selected']),
             self.builder.get_object('read_be').instate(['selected']),
             self.builder.get_object('read_owned').instate(['selected']),
+            self.builder.get_object('change_icon').instate(['selected']),
         ]
         self.builder.get_object("start")['state'] = 'disabled'
 

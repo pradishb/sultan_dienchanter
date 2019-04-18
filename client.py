@@ -15,6 +15,7 @@ import account
 import account_info
 import loot
 import store
+import summoner
 
 config = configparser.ConfigParser()
 config.read("config/config.cfg")
@@ -31,6 +32,7 @@ HANDLERS = [
     (store.buy_champ_by_be, [1350]),
     (account_info.get_be, []),
     (account_info.check_owned_loop, []),
+    (summoner.change_icon_loop, [23]),
 ]
 
 

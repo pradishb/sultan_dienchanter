@@ -128,6 +128,18 @@
           </object>
         </child>
         <child>
+          <object class="ttk.Checkbutton" id="change_icon">
+            <property name="text" translatable="yes">Read Number of Owned Champions</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="columnspan">3</property>
+              <property name="propagate">True</property>
+              <property name="row">9</property>
+              <property name="sticky">w</property>
+            </layout>
+          </object>
+        </child>
+        <child>
           <object class="tk.Button" id="start">
             <property name="command">start</property>
             <property name="text" translatable="yes">Start</property>
@@ -135,7 +147,7 @@
             <layout>
               <property name="column">0</property>
               <property name="propagate">False</property>
-              <property name="row">9</property>
+              <property name="row">10</property>
               <property name="sticky">w</property>
             </layout>
           </object>
@@ -148,7 +160,7 @@
             <layout>
               <property name="column">1</property>
               <property name="propagate">True</property>
-              <property name="row">9</property>
+              <property name="row">10</property>
             </layout>
           </object>
         </child>
@@ -160,7 +172,7 @@
             <layout>
               <property name="column">2</property>
               <property name="propagate">True</property>
-              <property name="row">9</property>
+              <property name="row">10</property>
               <property name="sticky">nw</property>
             </layout>
           </object>
@@ -173,7 +185,7 @@
               <property name="column">0</property>
               <property name="columnspan">3</property>
               <property name="propagate">False</property>
-              <property name="row">10</property>
+              <property name="row">11</property>
               <property name="sticky">w</property>
             </layout>
           </object>
@@ -182,7 +194,7 @@
     </child>
     <child>
       <object class="tk.LabelFrame" id="accounts_frame">
-        <property name="height">256</property>
+        <property name="height">277</property>
         <property name="text" translatable="yes">Accounts</property>
         <property name="width">438</property>
         <layout>
