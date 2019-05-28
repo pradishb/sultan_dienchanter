@@ -27,7 +27,7 @@ def open_chests(connection):
         return "error"
 
     loot_result = list(
-        filter(lambda m: re.fullmatch("CHEST_.*", m["lootId"]), res_json))
+        filter(lambda m: re.fullmatch("CHEST_((?!generic).)*", m["lootId"]), res_json))
     if loot_result == []:
         return "done"
 
