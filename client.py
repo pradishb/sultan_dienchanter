@@ -49,8 +49,7 @@ def connect():
 
 def open_league_client():
     path = os.path.join(config["CLIENT"]["location"], "LeagueClient.exe")
-    process = subprocess.Popen(
-        [path, "--headless"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen([path, "--headless"])
     return process
 
 
