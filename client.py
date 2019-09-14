@@ -27,9 +27,15 @@ HANDLERS = [
     (loot.redeem_free_loop, []),
     (loot.redeem_loop, [450]),
     (loot.redeem_loop, [1350]),
+    (loot.redeem_loop, [3150]),
+    (loot.redeem_loop, [4850]),
+    (loot.redeem_loop, [6300]),
     (loot.disenchant_loop, []),
     (store.buy_champ_by_be, [450]),
     (store.buy_champ_by_be, [1350]),
+    (store.buy_champ_by_be, [3150]),
+    (store.buy_champ_by_be, [4800]),
+    (store.buy_champ_by_be, [6300]),
     (account_info.get_be, []),
     (account_info.check_owned_loop, []),
     (summoner.change_icon_loop, [23]),
@@ -62,8 +68,8 @@ def do_macro(acc, options):
     account.login_loop(connection, acc)
 
     result = {
-        7: None,
-        8: None,
+        13: None,
+        14: None,
     }
 
     for key in range(len(options)):
@@ -74,4 +80,4 @@ def do_macro(acc, options):
     os.system('taskkill /f /im LeagueClient.exe')
     logging.info("Done")
 
-    return [result[7], result[8]]
+    return [result[13], result[14]]

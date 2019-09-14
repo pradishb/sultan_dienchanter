@@ -43,9 +43,15 @@ class Application:
         self.init_checkbox("redeem_free", True)
         self.init_checkbox("redeem_450", True)
         self.init_checkbox("redeem_1350", True)
+        self.init_checkbox("redeem_3150", True)
+        self.init_checkbox("redeem_4800", True)
+        self.init_checkbox("redeem_6300", True)
         self.init_checkbox("disenchant", True)
         self.init_checkbox("buy_450", True)
         self.init_checkbox("buy_1350", True)
+        self.init_checkbox("buy_3150", True)
+        self.init_checkbox("buy_4800", True)
+        self.init_checkbox("buy_6300", True)
         self.init_checkbox("read_be", True)
         self.init_checkbox("read_owned", True)
         self.init_checkbox("change_icon", True)
@@ -65,9 +71,15 @@ class Application:
             self.builder.get_object('redeem_free').instate(['selected']),
             self.builder.get_object('redeem_450').instate(['selected']),
             self.builder.get_object('redeem_1350').instate(['selected']),
+            self.builder.get_object('redeem_3150').instate(['selected']),
+            self.builder.get_object('redeem_4800').instate(['selected']),
+            self.builder.get_object('redeem_6300').instate(['selected']),
             self.builder.get_object('disenchant').instate(['selected']),
             self.builder.get_object('buy_450').instate(['selected']),
             self.builder.get_object('buy_1350').instate(['selected']),
+            self.builder.get_object('buy_3150').instate(['selected']),
+            self.builder.get_object('buy_4800').instate(['selected']),
+            self.builder.get_object('buy_6300').instate(['selected']),
             self.builder.get_object('read_be').instate(['selected']),
             self.builder.get_object('read_owned').instate(['selected']),
             self.builder.get_object('change_icon').instate(['selected']),
