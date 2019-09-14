@@ -8,13 +8,16 @@ class AccountBannedException(Exception):
     pass
 
 
+class InvalidCredentialsException(Exception):
+    pass
+
+
 def check_login_session(connection):
     url = "https://%s/lol-login/v1/session" % connection["url"]
     try:
         res = requests.get(
             url, verify=False, auth=('riot', connection["authorization"]), timeout=30)
         res_json = res.json()
-
         if res.status_code == 404:
             return False
 
@@ -23,6 +26,8 @@ def check_login_session(connection):
         if res_json["state"] == "ERROR":
             if res_json["error"]["messageId"] == "ACCOUNT_BANNED":
                 raise AccountBannedException
+            if res_json["error"]["messageId"] == "INVALID_CREDENTIALS":
+                raise InvalidCredentialsException
             return False
         return False
     except requests.RequestException:

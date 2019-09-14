@@ -9,7 +9,7 @@ import tkinter as tk
 import client
 import file_handler
 
-from account import AccountBannedException
+from account import AccountBannedException, InvalidCredentialsException
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -80,6 +80,9 @@ class Application:
             except AccountBannedException:
                 res = [0, 0]
                 logging.info("Account %s is banned", account[0])
+            except InvalidCredentialsException:
+                res = [0, 0]
+                logging.info("Account %s has invalid credentials", account[0])
             progress = (idx + 1) * 100 // len(self.accounts)
             account = account + res
             self.accounts[idx] = account
