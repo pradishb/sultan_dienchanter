@@ -4,6 +4,10 @@ import time
 import requests
 
 
+class AccountBannedException(Exception):
+    pass
+
+
 def check_login_session(connection):
     url = "https://%s/lol-login/v1/session" % connection["url"]
     try:
@@ -17,6 +21,8 @@ def check_login_session(connection):
         if res_json["state"] == "SUCCEEDED":
             return True
         if res_json["state"] == "ERROR":
+            if res_json["error"]["messageId"] == "ACCOUNT_BANNED":
+                raise AccountBannedException
             return False
         return False
     except requests.RequestException:

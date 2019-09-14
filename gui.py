@@ -9,6 +9,8 @@ import tkinter as tk
 import client
 import file_handler
 
+from account import AccountBannedException
+
 logging.getLogger().setLevel(logging.INFO)
 
 
@@ -73,7 +75,11 @@ class Application:
         self.builder.get_object("start")['state'] = 'disabled'
 
         for idx, account in enumerate(self.accounts):
-            res = client.do_macro(account, options)
+            try:
+                res = client.do_macro(account, options)
+            except AccountBannedException:
+                res = [0, 0]
+                logging.info("Account %s is banned", account[0])
             progress = (idx + 1) * 100 // len(self.accounts)
             account = account + res
             self.accounts[idx] = account
