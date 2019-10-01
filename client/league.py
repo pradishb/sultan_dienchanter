@@ -1,26 +1,20 @@
-import argparse
-import configparser
-import csv
 import logging
 import os
-import re
 import subprocess
-import sys
 import time
 
 import lcu_connector_python as lcu
-import requests
+import urllib3
 
 import account
 import account_info
 import loot
 import store
 import summoner
-
-config = configparser.ConfigParser()
-config.read("config/config.cfg")
-
-requests.packages.urllib3.disable_warnings()
+from process import is_running
+from settings import (
+    LEAGUE_CLIENT_PATH, LEAGUE_CLIENT_PROCESS,
+    RIOT_CLIENT_PROCESS, RIOT_CLIENT_SERVICES_PATH)
 
 HANDLERS = [
     (loot.open_chests_loop, []),
@@ -47,25 +41,32 @@ class LeagueConnectionException(Exception):
 
 
 def connect():
-    connection = lcu.connect(config["CLIENT"]["location"])
+    connection = lcu.connect(LEAGUE_CLIENT_PATH)
     if connection == "Ensure the client is running and that you supplied the correct path":
         raise LeagueConnectionException
     return connection
 
 
 def open_league_client():
-    path = os.path.join(config["CLIENT"]["location"], "LeagueClient.exe")
-    process = subprocess.Popen([path, "--headless"])
+    if is_running(LEAGUE_CLIENT_PROCESS) or is_running(RIOT_CLIENT_PROCESS):
+        return
+    logging.info('Starting riot client')
+    process = subprocess.Popen([
+        RIOT_CLIENT_SERVICES_PATH,
+        "--headless",
+        "--launch-product=league_of_legends",
+        "--launch-patchline=live"])
+    time.sleep(5)
     return process
 
 
-def do_macro(acc, options):
-    os.system('taskkill /f /im LeagueClient.exe')
-    logging.info("Current Account: %s, Password: %s", acc[0], acc[1])
+def do_macro(riot_client, acc, options):
     open_league_client()
-    time.sleep(5)
+    logging.info("Current Account: %s, Password: %s", acc[0], acc[1])
+    riot_client.login(acc[0], acc[1])
+    print(riot_client.state)
+
     connection = connect()
-    account.login_loop(connection, acc)
 
     result = {
         13: None,
