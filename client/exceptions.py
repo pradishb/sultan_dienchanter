@@ -4,3 +4,11 @@ class ConsentRequiredException(Exception):
 
 class AuthenticationFailureException(Exception):
     pass
+
+
+class AccountBannedException(Exception):
+    pass
+
+
+class InvalidCredentialsException(Exception):
+    pass

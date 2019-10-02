@@ -9,11 +9,14 @@ import tkinter as tk
 import urllib3
 
 import file_handler
-from process import kill_process
-from account import AccountBannedException, InvalidCredentialsException
+from client.exceptions import (
+    AccountBannedException,
+    AuthenticationFailureException,
+    ConsentRequiredException,
+    InvalidCredentialsException)
 from client.league import do_macro
 from client.riot import RiotClient
-from client.exceptions import AuthenticationFailureException, ConsentRequiredException
+from process import kill_process
 from settings import LEAGUE_CLIENT_PROCESS, RIOT_CLIENT_PROCESS
 
 logging.getLogger().setLevel(logging.INFO)

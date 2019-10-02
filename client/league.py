@@ -7,7 +7,8 @@ import lcu_connector_python as lcu
 import urllib3
 import requests
 
-import account
+from .exceptions import AccountBannedException
+import client.account as account
 import account_info
 import loot
 import store
@@ -87,17 +88,20 @@ def do_macro(riot_client, acc, options):
     riot_client.login(acc[0], acc[1])
     open_league_client()
     connection = connect()
-    result = {
-        13: None,
-        14: None,
-    }
+    try:
+        account.check_login_session(connection)
+        result = {
+            13: None,
+            14: None,
+        }
 
-    for key in range(len(options)):
-        if not options[key]:
-            continue
-        result[key] = HANDLERS[key][0](connection, *HANDLERS[key][1])
+        for key in range(len(options)):
+            if not options[key]:
+                continue
+            result[key] = HANDLERS[key][0](connection, *HANDLERS[key][1])
+    except AccountBannedException:
+        riot_client.logout(connection)
+        raise AccountBannedException
     riot_client.logout(connection)
-
     logging.info("Done")
-
     return [result[13], result[14]]
