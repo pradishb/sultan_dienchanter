@@ -7,8 +7,6 @@ import time
 
 import psutil
 
-from settings import GAME_PROCESS_LOCAITON, GAME_PROCESS
-
 
 def is_running(process_name):
     '''
@@ -27,30 +25,14 @@ def is_running(process_name):
     return False
 
 
-def open_game():
+def kill_process(process_name):
     '''
-    Opens a instance of game
-    '''
-    process = subprocess.Popen([GAME_PROCESS_LOCAITON])
-    return process
-
-
-def close_game():
-    '''
-    Closes the game
+    Closes a process
     '''
     while True:
         for proc in psutil.process_iter():
-            if proc.name() == GAME_PROCESS:
+            if proc.name() == process_name:
                 proc.kill()
-        if not is_running(GAME_PROCESS):
+        if not is_running(process_name):
             return
         time.sleep(1)
-
-
-def restart_game():
-    '''
-    Restarts the game
-    '''
-    close_game()
-    open_game()
