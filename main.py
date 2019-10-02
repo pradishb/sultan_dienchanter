@@ -6,12 +6,18 @@ import threading
 import time
 import tkinter as tk
 
-import client
-import file_handler
+import urllib3
 
+import file_handler
+from process import kill_process
 from account import AccountBannedException, InvalidCredentialsException
+from client.league import do_macro
+from client.riot import RiotClient
+from client.exceptions import AuthenticationFailureException, ConsentRequiredException
+from settings import LEAGUE_CLIENT_PROCESS, RIOT_CLIENT_PROCESS
 
 logging.getLogger().setLevel(logging.INFO)
+urllib3.disable_warnings()
 
 
 class LogWriter(object):
@@ -37,6 +43,7 @@ class Application:
         self.mainwindow = builder.get_object('main_frame', master)
         self.builder.connect_callbacks(self)
         self.init_checkboxes()
+        self.riot_client = RiotClient()
 
     def init_checkboxes(self):
         self.init_checkbox("open_chests", True)
@@ -86,15 +93,20 @@ class Application:
         ]
         self.builder.get_object("start")['state'] = 'disabled'
 
+        kill_process(LEAGUE_CLIENT_PROCESS)
+        kill_process(RIOT_CLIENT_PROCESS)
         for idx, account in enumerate(self.accounts):
             try:
-                res = client.do_macro(account, options)
+                res = do_macro(self.riot_client, account, options)
             except AccountBannedException:
                 res = [0, 0]
                 logging.info("Account %s is banned", account[0])
-            except InvalidCredentialsException:
+            except (InvalidCredentialsException, AuthenticationFailureException):
                 res = [0, 0]
                 logging.info("Account %s has invalid credentials", account[0])
+            except ConsentRequiredException:
+                res = [0, 0]
+                logging.info("Account %s needs consent", account[0])
             progress = (idx + 1) * 100 // len(self.accounts)
             account = account + res
             self.accounts[idx] = account

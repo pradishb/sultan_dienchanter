@@ -1,7 +1,13 @@
 import time
 import logging
 
-from connection.riot import Connection
+import requests
+
+from process import kill_process
+
+from settings import LEAGUE_CLIENT_PROCESS
+
+from connection.riot import Connection, ClientConnectionException
 from .exceptions import ConsentRequiredException, AuthenticationFailureException
 
 
@@ -11,18 +17,23 @@ class RiotClient:
         self.connection = Connection()
 
     def update(self):
-        res = self.connection.get('/rso-auth/v1/authorization')
-        if res.status_code == 404:
-            self.state = 'no_authorization'
-            return
-        res = self.connection.get('/eula/v1/agreement')
-        res_json = res.json()
+        try:
+            res = self.connection.get('/rso-auth/v1/authorization')
+            if res.status_code == 404:
+                self.state = 'no_authorization'
+                return
+            res = self.connection.get('/eula/v1/agreement')
+            res_json = res.json()
 
-        if res_json['acceptance'] == 'Accepted':
-            self.state = 'completed'
-            res = self.connection.get('/product-session/v1/sessions')
-            return
-        self.state = 'agreement_not_accepted'
+            if res_json['acceptance'] == 'Accepted':
+                self.state = 'completed'
+                res = self.connection.get('/product-session/v1/sessions')
+                return
+            self.state = 'agreement_not_accepted'
+        except requests.exceptions.RequestException:
+            self.state = 'request_exception'
+        except ClientConnectionException:
+            self.state = 'client_connection_exception'
 
     def login(self, username, password):
         while True:
@@ -32,9 +43,26 @@ class RiotClient:
             self.do_macro(username, password)
             time.sleep(1)
 
+    def logout(self, connection):
+        logging.info('Logging out')
+        while True:
+            try:
+                self.update()
+                if self.state == 'no_authorization':
+                    kill_process(LEAGUE_CLIENT_PROCESS)
+                    return
+                url = "https://%s/lol-rso-auth/v1/session" % connection["url"]
+                requests.delete(
+                    url, verify=False, auth=('riot', connection["authorization"]), timeout=30)
+            except requests.exceptions.RequestException:
+                pass
+            finally:
+                time.sleep(1)
+
     def do_macro(self, username, password):
         if self.state == 'no_authorization':
-            logging.info('Logging into new riot client')
+            logging.info(
+                'Logging into new riot client, %s, %s', username, password)
             res = self.connection.post(
                 '/rso-auth/v2/authorizations',
                 json={"clientId": "riot-client", "trustLevels": ["always_trusted"]})
@@ -47,7 +75,6 @@ class RiotClient:
                 if res_json['message'] == 'authorization_error: consent_required: ':
                     raise ConsentRequiredException
             if 'error' in res_json:
-                print(res_json)
                 if res_json['error'] == 'auth_failure':
                     raise AuthenticationFailureException
                 if res_json['error'] == 'rate_limited':

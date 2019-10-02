@@ -34,20 +34,6 @@ def check_login_session(connection):
         return False
 
 
-def login(connection, username, password):
-    try:
-        data = {
-            "password": password,
-            "username": username,
-        }
-        url = "https://%s/lol-login/v1/session" % connection["url"]
-        requests.post(
-            url, verify=False, auth=('riot', connection["authorization"]), timeout=30,
-            json=data)
-    except requests.RequestException:
-        return
-
-
 def logout(connection):
     try:
         logging.info("Logging out")
@@ -58,9 +44,6 @@ def logout(connection):
         return
 
 
-def login_loop(connection, account):
+def login(account):
     logging.info(
         "Logging in. Username: %s Password: %s", account[0], account[1])
-    while not check_login_session(connection):
-        login(connection, account[0], account[1])
-        time.sleep(1)

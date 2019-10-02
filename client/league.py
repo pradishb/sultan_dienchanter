@@ -5,6 +5,7 @@ import time
 
 import lcu_connector_python as lcu
 import urllib3
+import requests
 
 import account
 import account_info
@@ -12,9 +13,8 @@ import loot
 import store
 import summoner
 from process import is_running
-from settings import (
-    LEAGUE_CLIENT_PATH, LEAGUE_CLIENT_PROCESS,
-    RIOT_CLIENT_PROCESS, RIOT_CLIENT_SERVICES_PATH)
+from settings import (LEAGUE_CLIENT_PATH, LEAGUE_CLIENT_PROCESS,
+                      RIOT_CLIENT_PROCESS, RIOT_CLIENT_SERVICES_PATH)
 
 HANDLERS = [
     (loot.open_chests_loop, []),
@@ -36,18 +36,16 @@ HANDLERS = [
 ]
 
 
-class LeagueConnectionException(Exception):
-    pass
-
-
 def connect():
-    connection = lcu.connect(LEAGUE_CLIENT_PATH)
-    if connection == "Ensure the client is running and that you supplied the correct path":
-        raise LeagueConnectionException
-    return connection
+    while True:
+        connection = lcu.connect(LEAGUE_CLIENT_PATH)
+        if connection != "Ensure the client is running and that you supplied the correct path":
+            if check_lcu_online(connection):
+                return connection
+        time.sleep(1)
 
 
-def open_league_client():
+def open_riot_client():
     if is_running(LEAGUE_CLIENT_PROCESS) or is_running(RIOT_CLIENT_PROCESS):
         return
     logging.info('Starting riot client')
@@ -56,18 +54,39 @@ def open_league_client():
         "--headless",
         "--launch-product=league_of_legends",
         "--launch-patchline=live"])
-    time.sleep(5)
     return process
 
 
+def open_league_client():
+    if is_running(LEAGUE_CLIENT_PROCESS):
+        return
+    logging.info('Starting league client')
+    process = subprocess.Popen([
+        LEAGUE_CLIENT_PATH,
+        "--headless"])
+    return process
+
+
+def check_lcu_online(connection):
+    try:
+        url = "https://%s/lol-service-status/v1/lcu-status" % connection["url"]
+        res = requests.get(
+            url, verify=False, auth=('riot', connection["authorization"]), timeout=30)
+        res_json = res.json()
+        if 'status' in res_json:
+            if res_json["status"] == 'online':
+                return True
+    except requests.exceptions.RequestException:
+        return False
+    return False
+
+
 def do_macro(riot_client, acc, options):
-    open_league_client()
+    open_riot_client()
     logging.info("Current Account: %s, Password: %s", acc[0], acc[1])
     riot_client.login(acc[0], acc[1])
-    print(riot_client.state)
-
+    open_league_client()
     connection = connect()
-
     result = {
         13: None,
         14: None,
@@ -77,8 +96,8 @@ def do_macro(riot_client, acc, options):
         if not options[key]:
             continue
         result[key] = HANDLERS[key][0](connection, *HANDLERS[key][1])
+    riot_client.logout(connection)
 
-    os.system('taskkill /f /im LeagueClient.exe')
     logging.info("Done")
 
     return [result[13], result[14]]
